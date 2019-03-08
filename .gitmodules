@@ -1,0 +1,3 @@
+[submodule "dali-reads-gibson"]
+	path = dali-reads-gibson
+	url = https://github.com/lunarcloud/dali-reads-gibson.git
