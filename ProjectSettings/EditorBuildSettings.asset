@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/GoogleVR/Scenes/TrackpadNav.unity
+    guid: 72cf9891ccf6f7d4e86547bf96e03a4c
   m_configObjects: {}
