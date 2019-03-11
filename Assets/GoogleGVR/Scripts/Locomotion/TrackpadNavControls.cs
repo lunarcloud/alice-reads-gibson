@@ -24,11 +24,11 @@ public class TrackpadNavControls : MonoBehaviour
 
     private CharacterController character;
 
-    private Camera HeadCamera;
+    public float Angle;
+    public float Magnitude;
 
     private void Start()
     {
-        HeadCamera = GetComponentInChildren<Camera>();
         character = GetComponentInChildren<CharacterController>();
         StandingHeight = character.height;
         CrouchingHeight = CrouchingScale * StandingHeight;
@@ -57,6 +57,8 @@ public class TrackpadNavControls : MonoBehaviour
         if (DaydreamController.GetButton(GvrControllerButton.TouchPadTouch))
         {
             var touchPos = DaydreamController.TouchPos;
+            Angle = Vector2.Angle(Vector2.zero, touchPos);
+            Magnitude = touchPos.magnitude;
             //------ movement -----
             //          Y+
             //      X-      X+
