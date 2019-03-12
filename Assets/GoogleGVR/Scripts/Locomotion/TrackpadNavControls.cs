@@ -101,4 +101,11 @@ public class TrackpadNavControls : MonoBehaviour
         }
 
     }
+
+    public void SetRotation(bool value) {
+        UseRotation = value;
+    }
+    public void SetOrbit(bool value) {
+        UseOrbit = value;
+    }
 }
