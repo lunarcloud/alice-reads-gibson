@@ -36,12 +36,8 @@ public class TrackpadNavControls : MonoBehaviour
         ZonedInput.Zones = 16;
         ZonedInput.Sections.Add(Walk);
         ZonedInput.Sections.Add(Strafe);
-        if (UseRotation) {
-            ZonedInput.Sections.Add(Rotate);
-            if (UseOrbit) {
-                ZonedInput.Sections.Add(Orbit);
-            }
-        }
+        ZonedInput.Sections.Add(Rotate);
+        ZonedInput.Sections.Add(Orbit);
     }
 
     private void Update()
@@ -79,19 +75,21 @@ public class TrackpadNavControls : MonoBehaviour
                                 * sidewaysSpeed;
             }
             
-            if (ZonedInput.ActiveSections.Contains(Orbit)) {
-                transform.Rotate(0,
-                    -DaydreamController.TouchPos.x 
-                    * rotationSpeed 
-                    * Time.deltaTime, 
-                0);
-            } else if (ZonedInput.ActiveSections.Contains(Rotate)) {
-                transform.Rotate(0,
-                    DaydreamController.TouchPos.x 
-                    * rotationSpeed 
-                    * Time.deltaTime, 
-                0);
-            }            
+            if (UseRotation) {
+                if (UseOrbit && ZonedInput.ActiveSections.Contains(Orbit)) {
+                    transform.Rotate(0,
+                        -DaydreamController.TouchPos.x 
+                        * rotationSpeed 
+                        * Time.deltaTime, 
+                    0);
+                } else if (ZonedInput.ActiveSections.Contains(Rotate)) {
+                    transform.Rotate(0,
+                        DaydreamController.TouchPos.x 
+                        * rotationSpeed 
+                        * Time.deltaTime, 
+                    0);
+                }
+            }
         }
         if (!character.isGrounded)
         {

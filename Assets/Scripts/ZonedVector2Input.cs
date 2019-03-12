@@ -3,18 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ZonedVector2Input {
-    public Vector2 CenterIgnoreZone = new Vector2(0.3f, 0.3f);
-
-    private float _Angle;
-    public float Angle {
-        get => _Angle;
-    }
-    private float _PositiveOnlyAngle;
-    public float PositiveOnlyAngle {
-        get => _PositiveOnlyAngle;
-    }
     
-    private int _ActiveZone;
+    public float MinimumMagnitude = 0.3f;
+
+    private int _ActiveZone = -1;
     public int ActiveZone {
         get => _ActiveZone;
     }
@@ -43,14 +35,23 @@ public class ZonedVector2Input {
         set {
             _Value = value;
 
+            // Clear previously active
+            _ActiveSections.Clear();
+
+            // Skip if still in the center of the touchpad / stick
+            if (value.magnitude < MinimumMagnitude) {
+                _ActiveZone = -1;
+                return;
+            }
+
             // Update Angle Values
-            _Angle = Mathf.Atan2(value.y, value.x);
-            _PositiveOnlyAngle =  _Angle > 0 ? _Angle : _Angle + (2 * Mathf.PI);
-            var sliceSize = 2 * Mathf.PI / Zones;
-            _ActiveZone = Mathf.FloorToInt(_PositiveOnlyAngle / sliceSize);
+            var angle = Mathf.Atan2(value.y, value.x);
+            var positiveOnlyAngle =  angle > 0 ? angle : angle + (2 * Mathf.PI);
+            _ActiveZone = Mathf.FloorToInt(
+                positiveOnlyAngle / (2 * Mathf.PI / Zones) // slice size
+            );
 
             // Discover which sections are active
-            _ActiveSections.Clear();
             foreach (var section in Sections) {
                 if (section.Zones.Contains(_ActiveZone)) {
                     _ActiveSections.Add(section);
