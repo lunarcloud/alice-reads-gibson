@@ -14,24 +14,34 @@ public class TrackpadNavControls : MonoBehaviour
     private float StandingHeight = 1.6f;
     private float CrouchingHeight = 0.8f;
 
-    private readonly float UpperRotateThreshold = 0.2f;
-    private readonly float LowerRotateThreshold = 0.5f;
-    private readonly float LinearThreshold = 0.2f;
-    private readonly float RotationToSideStepThreshold = 0.2f;
-    private readonly float RotateAndSideStepThreshold = -0.3f;
+    public bool UseRotation = true;
+    public bool UseOrbit = true;
+
+    public readonly ZoneSection Walk = new ZoneSection(2, 3, 4, 5, 11, 12);
+    public readonly ZoneSection Rotate = new ZoneSection(1, 2, 3, 4, 5, 6);
+    public readonly ZoneSection Strafe = new ZoneSection(7, 8, 15, 0);
+    public readonly ZoneSection Orbit = new ZoneSection(9, 10, 13, 14);
+
+    private ZonedVector2Input ZonedInput = new ZonedVector2Input();
 
     private bool Crouching;
 
     private CharacterController character;
-
-    public float Angle;
-    public float Magnitude;
 
     private void Start()
     {
         character = GetComponentInChildren<CharacterController>();
         StandingHeight = character.height;
         CrouchingHeight = CrouchingScale * StandingHeight;
+        ZonedInput.Zones = 16;
+        ZonedInput.Sections.Add(Walk);
+        ZonedInput.Sections.Add(Strafe);
+        if (UseRotation) {
+            ZonedInput.Sections.Add(Rotate);
+            if (UseOrbit) {
+                ZonedInput.Sections.Add(Orbit);
+            }
+        }
     }
 
     private void Update()
@@ -56,43 +66,32 @@ public class TrackpadNavControls : MonoBehaviour
         var moveDirection = Vector3.zero;
         if (DaydreamController.GetButton(GvrControllerButton.TouchPadTouch))
         {
-            var touchPos = DaydreamController.TouchPos;
-            Angle = Vector2.Angle(Vector2.zero, touchPos);
-            Magnitude = touchPos.magnitude;
-            //------ movement -----
-            //          Y+
-            //      X-      X+
-            //          Y-
-            //---------------------
-            var movementForward = touchPos.y > LinearThreshold
-                || (touchPos.y < -LinearThreshold && Mathf.Abs(touchPos.x) < LowerRotateThreshold)
-                ? touchPos.y : 0;
+            ZonedInput.Value = DaydreamController.TouchPos;
 
-            var rotationMotion = (touchPos.y >= RotationToSideStepThreshold && Mathf.Abs(touchPos.x) > UpperRotateThreshold)
-                ? touchPos.x : 0;
-
-            var movementSideways = (touchPos.y < RotationToSideStepThreshold && Mathf.Abs(touchPos.x) > UpperRotateThreshold)
-                ? touchPos.x : 0;
-
-            rotationMotion -= (Mathf.Abs(movementSideways) > 0
-                && touchPos.y < RotateAndSideStepThreshold
-                && Mathf.Abs(touchPos.x) > UpperRotateThreshold)
-                ? touchPos.x/2 : 0;
-
-
-            if (Mathf.Abs(rotationMotion) > 0)
-            {
-                transform.Rotate(0, rotationMotion * rotationSpeed * Time.deltaTime, 0);
+            if (ZonedInput.ActiveSections.Contains(Walk)) {
+                moveDirection = transform.TransformDirection(GvrVRHelpers.GetHeadRotation() * Vector3.forward)
+                                * DaydreamController.TouchPos.y 
+                                * forwardSpeed;
             }
-            if (Mathf.Abs(movementForward) > 0)
-            {
-                var forward = GvrVRHelpers.GetHeadForward();
-                moveDirection = transform.TransformDirection(forward) * movementForward * forwardSpeed;
+            if (ZonedInput.ActiveSections.Contains(Orbit) || ZonedInput.ActiveSections.Contains(Strafe)) {
+                moveDirection += transform.TransformDirection(GvrVRHelpers.GetHeadRotation() * Vector3.right) 
+                                * DaydreamController.TouchPos.x 
+                                * sidewaysSpeed;
             }
-            if (Mathf.Abs(movementSideways) > 0)
-            {
-                moveDirection += transform.TransformDirection(Vector3.right) * movementSideways * sidewaysSpeed;
-            }
+            
+            if (ZonedInput.ActiveSections.Contains(Orbit)) {
+                transform.Rotate(0,
+                    -DaydreamController.TouchPos.x 
+                    * rotationSpeed 
+                    * Time.deltaTime, 
+                0);
+            } else if (ZonedInput.ActiveSections.Contains(Rotate)) {
+                transform.Rotate(0,
+                    DaydreamController.TouchPos.x 
+                    * rotationSpeed 
+                    * Time.deltaTime, 
+                0);
+            }            
         }
         if (!character.isGrounded)
         {
