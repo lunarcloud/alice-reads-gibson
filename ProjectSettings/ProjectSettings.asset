@@ -128,7 +128,7 @@ PlayerSettings:
   isWsaHolographicRemotingEnabled: 0
   vrSettings:
     cardboard:
-      depthFormat: 0
+      depthFormat: 2
       enableTransitionView: 0
     daydream:
       depthFormat: 2
@@ -156,7 +156,7 @@ PlayerSettings:
     Android: org.AliceReadsGibson.VRDemos
   buildNumber: {}
   AndroidBundleVersionCode: 2
-  AndroidMinSdkVersion: 24
+  AndroidMinSdkVersion: 19
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
   aotOptions: 
@@ -397,6 +397,7 @@ PlayerSettings:
     m_Enabled: 1
     m_Devices:
     - daydream
+    - cardboard
   m_BuildTargetEnableVuforiaSettings: []
   openGLRequireES31: 0
   openGLRequireES31AEP: 0
