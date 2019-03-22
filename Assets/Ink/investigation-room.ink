@@ -12,6 +12,7 @@ It was a messy situation, and I found myself in the muck up to my waders.
 == InBetween ==
 You look around the room.
  + {not Lamp.Blood} [Lamp] -> Lamp
+ + [Talk to the inspector] -> Inspector
  * [Done] -> DONE
 
 == Lamp ==
@@ -21,5 +22,11 @@ It was a lamp.
  - -> InBetween
 
 = Blood
-There was blood upon it!
+Where'd this come from?
+-> InBetween
+
+== Inspector ==
+What do you want? # inspector
+He was a pushy fella.
+{Lamp.Blood:Did you see the bloodstain?|Nothing.}  #you
 -> InBetween
