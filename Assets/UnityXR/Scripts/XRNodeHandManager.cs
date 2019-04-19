@@ -13,6 +13,8 @@ public class XRNodeHandManager : MonoBehaviour
     [Tooltip("If left null, will attempt to use GetComponent on self")]
     public TrackedPoseDriver tpd = null;
 
+    public float playerHeight = 1.6f;
+
     private Transform m_Transform;
 
     private void Start()
@@ -31,7 +33,7 @@ public class XRNodeHandManager : MonoBehaviour
         if (XRSettings.loadedDeviceName == "daydream")
         {
             tpd.trackingType = TrackedPoseDriver.TrackingType.RotationOnly;
-            m_Transform.localPosition = new Vector3(0f, -1f, 0.5f);
+            m_Transform.Translate(Vector3.up * playerHeight);
         }
         else
         {

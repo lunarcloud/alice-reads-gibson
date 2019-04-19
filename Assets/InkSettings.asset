@@ -19,7 +19,7 @@ MonoBehaviour:
   handleJSONFilesAutomatically: 1
   compileTimeout: 6
   customInklecateOptions:
-    runInklecateWithMono: 0
+    runInklecateWithMono: 1
     monoPaths:
     - /usr/bin/mono
     - /usr/local/bin/mono
