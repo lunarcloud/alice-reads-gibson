@@ -12,56 +12,48 @@ namespace AliceReadsGibson {
         public XRNode nodeType;
         public GameObject containerToDisable;
 
-        [Tooltip("If left null, will attempt to use GetComponent on self")]
-        public TrackedPoseDriver tpd = null;
+        private TrackedPoseDriver tpd = null;
 
         private Transform m_Transform;
 
-        public float up = 1.0f;
+        public float up = 1.2f;
         public float right = 0.3f;
-        public float forward = 0.3f;
+        public float forward = 0.5f;
+
+        public bool hideIfNotTracked = true;
 
         private void Start()
         {
-            if (tpd == null)
-                tpd = GetComponent<TrackedPoseDriver>();
+            tpd = GetComponent<TrackedPoseDriver>();
+            nodeType = tpd.poseSource == TrackedPoseDriver.TrackedPose.RightPose ? XRNode.RightHand : XRNode.LeftHand ;
 
             m_Transform = GetComponent<Transform>();
+
+            if (XRSettings.loadedDeviceName == "daydream") 
+                m_Transform.localPosition = new Vector3(right, up, forward);
         }
 
         // Update is called once per frame
         void Update()
         {
-            ShowOrHide();
-
-            if (XRSettings.loadedDeviceName == "cardboard") // Force remove both hands on cardboard
-            {
-                containerToDisable.SetActive(false);
-            }
-            else if (XRSettings.loadedDeviceName == "daydream")
-            {
-                m_Transform.localPosition = new Vector3(right, up, forward);
-            }
-            else
-            {
-                tpd.trackingType = TrackedPoseDriver.TrackingType.RotationAndPosition;
+            if (hideIfNotTracked) {
+                ShowOrHide();
             }
         }
 
-        void ShowOrHide()
+        bool ShowOrHide()
         {
             List<XRNodeState> nodeStates = new List<XRNodeState>();
             InputTracking.GetNodeStates(nodeStates);
 
             bool setActive = false;
-            foreach (XRNodeState nodeState in nodeStates)
-            {
-                if (nodeState.nodeType == nodeType && nodeState.tracked)
-                {
-                    setActive = true;
+            foreach (XRNodeState nodeState in nodeStates) {
+                if (nodeState.nodeType == nodeType) {
+                    setActive = nodeState.tracked;
                 }
             }
             containerToDisable.SetActive(setActive);
+            return setActive;
         }
     }
 }

@@ -876,7 +876,7 @@ MonoBehaviour:
   tpd: {fileID: 859893155}
   up: 1.2
   right: 0.3
-  forward: 0.6
+  forward: 0.5
 --- !u!114 &859893155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1764,7 +1764,7 @@ MonoBehaviour:
   tpd: {fileID: 1945164192}
   up: 1.2
   right: -0.3
-  forward: 0.6
+  forward: 0.5
 --- !u!114 &1945164192
 MonoBehaviour:
   m_ObjectHideFlags: 0
