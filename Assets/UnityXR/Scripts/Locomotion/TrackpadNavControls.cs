@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Gvr {
+
+namespace AliceReadsGibson {
     public class TrackpadNavControls : MonoBehaviour
     {
 
@@ -40,7 +41,7 @@ namespace Gvr {
             ZonedInput.Sections.Add(Rotate);
             ZonedInput.Sections.Add(Orbit);
         }
-
+    /*
         private void Update()
         {
             GvrControllerInputDevice DaydreamController = GvrControllerInput.GetDevice(GvrControllerHand.Dominant);
@@ -102,7 +103,7 @@ namespace Gvr {
             }
 
         }
-
+    */
         public void SetRotation(bool value) {
             UseRotation = value;
         }

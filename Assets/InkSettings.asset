@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   templateFile: {fileID: 0}
   defaultJsonAssetPath: {fileID: 0}
-  compileAutomatically: 1
+  compileAutomatically: 0
   delayInPlayMode: 1
   handleJSONFilesAutomatically: 1
-  compileTimeout: 6
+  compileTimeout: 10
   customInklecateOptions:
     runInklecateWithMono: 1
     monoPaths:

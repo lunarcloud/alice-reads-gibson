@@ -15,7 +15,7 @@ public class AutoWalk : MonoBehaviour
     {
         character = GetComponentInChildren<CharacterController>();
     }
-
+	
     // Update is called once per frame
     void Update()
     {
@@ -33,6 +33,7 @@ public class AutoWalk : MonoBehaviour
             character.SimpleMove(moveDirection * Time.deltaTime);
         }
     }
+	
     public void SetWalking(bool value) {
         Walking = value;
     }

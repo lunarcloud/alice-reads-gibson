@@ -5,55 +5,63 @@ using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.SpatialTracking;
 
-public class XRNodeHandManager : MonoBehaviour
-{
-    public XRNode nodeType;
-    public GameObject containerToDisable;
 
-    [Tooltip("If left null, will attempt to use GetComponent on self")]
-    public TrackedPoseDriver tpd = null;
-
-    public float playerHeight = 1.6f;
-
-    private Transform m_Transform;
-
-    private void Start()
+namespace AliceReadsGibson {
+    public class XRNodeHandManager : MonoBehaviour
     {
-        if (tpd == null)
-            tpd = GetComponent<TrackedPoseDriver>();
+        public XRNode nodeType;
+        public GameObject containerToDisable;
 
-        m_Transform = GetComponent<Transform>();
-    }
+        [Tooltip("If left null, will attempt to use GetComponent on self")]
+        public TrackedPoseDriver tpd = null;
 
-    // Update is called once per frame
-    void Update()
-    {
-        ShowOrHide();
+        private Transform m_Transform;
 
-        if (XRSettings.loadedDeviceName == "daydream")
+        public float up = 1.0f;
+        public float right = 0.3f;
+        public float forward = 0.3f;
+
+        private void Start()
         {
-            tpd.trackingType = TrackedPoseDriver.TrackingType.RotationOnly;
-            m_Transform.Translate(Vector3.up * playerHeight);
+            if (tpd == null)
+                tpd = GetComponent<TrackedPoseDriver>();
+
+            m_Transform = GetComponent<Transform>();
         }
-        else
-        {
-            tpd.trackingType = TrackedPoseDriver.TrackingType.RotationAndPosition;
-        }
-    }
 
-    void ShowOrHide()
-    {
-        List<XRNodeState> nodeStates = new List<XRNodeState>();
-        InputTracking.GetNodeStates(nodeStates);
-
-        bool setActive = false;
-        foreach (XRNodeState nodeState in nodeStates)
+        // Update is called once per frame
+        void Update()
         {
-            if (nodeState.nodeType == nodeType)
+            ShowOrHide();
+
+            if (XRSettings.loadedDeviceName == "cardboard") // Force remove both hands on cardboard
             {
-                setActive = true;
+                containerToDisable.SetActive(false);
+            }
+            else if (XRSettings.loadedDeviceName == "daydream")
+            {
+                m_Transform.localPosition = new Vector3(right, up, forward);
+            }
+            else
+            {
+                tpd.trackingType = TrackedPoseDriver.TrackingType.RotationAndPosition;
             }
         }
-        containerToDisable.SetActive(setActive);
+
+        void ShowOrHide()
+        {
+            List<XRNodeState> nodeStates = new List<XRNodeState>();
+            InputTracking.GetNodeStates(nodeStates);
+
+            bool setActive = false;
+            foreach (XRNodeState nodeState in nodeStates)
+            {
+                if (nodeState.nodeType == nodeType && nodeState.tracked)
+                {
+                    setActive = true;
+                }
+            }
+            containerToDisable.SetActive(setActive);
+        }
     }
 }
