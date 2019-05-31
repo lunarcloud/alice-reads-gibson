@@ -5,37 +5,31 @@ using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.SpatialTracking;
 
-
 namespace AliceReadsGibson {
     public class XRHeadAdjust3DoF : MonoBehaviour
     {
         private XRNode nodeType = XRNode.Head;
 
         [Tooltip("If left null, will attempt to use GetComponent on self")]
-        public TrackedPoseDriver tpd = null;
-
+        TrackedPoseDriver tpd = null;
+        
+        Transform transformee = null;
         public float playerHeight = 1.6f;
 
-        private Transform m_Transform;
-
-        private void Start()
+        private void OnEnable()
         {
             if (tpd == null)
                 tpd = GetComponent<TrackedPoseDriver>();
 
-            m_Transform = GetComponent<Transform>();
-            
-            if (XRSettings.loadedDeviceName == "daydream"
-            || XRSettings.loadedDeviceName == "cardboard")
+            if (transformee == null)
+                transformee = GetComponent<Transform>();    
+
+            Debug.Log("VR Device: " + XRSettings.loadedDeviceName);
+                        
+            if (XRSettings.loadedDeviceName == "daydream" || XRSettings.loadedDeviceName == "cardboard")
             {
-                m_Transform.Translate(Vector3.up * playerHeight);
+                transformee.Translate(Vector3.up * playerHeight);
             }
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
     }
 }
